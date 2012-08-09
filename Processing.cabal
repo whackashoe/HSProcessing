@@ -1,0 +1,46 @@
+name:         Processing
+version:      0.1
+
+category:     Graphics
+
+synopsis:     Building up a Processing port to Haskell
+
+author:       Jeffrey Drake <drakej@uwindsor.ca>
+maintainer:   Jeffrey Drake <drakej@uwindsor.ca>
+
+license:      BSD3
+license-file: LICENSE
+
+-- -- -- -- -- -- -- -- -- --
+
+cabal-version: >= 1.6
+build-type:    Simple
+
+-- -- -- -- -- -- -- -- -- --
+
+-- extra-source-files:
+--   src/Cube.hs
+--  src/Display.hs
+
+executable main
+  main-is: main.hs
+
+  hs-source-dirs:
+    src
+
+  build-depends:
+    GLFW-b == 0.*,
+    OpenGL == 2.5.*,
+    GLURaw == 1.2.*,
+    base   == 4.*,
+    OpenGLRaw >= 1.2
+
+  ghc-options: -Wall -O2
+  if impl(ghc >= 6.8)
+    ghc-options: -fwarn-tabs
+
+-- -- -- -- -- -- -- -- -- --
+
+-- source-repository head
+--  type:     git
+--  location: git://github.com/bsl/GLFW-b-demo.git
