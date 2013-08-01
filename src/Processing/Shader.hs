@@ -1,9 +1,11 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE TypeSynonymInstances #-}
+{-# LANGUAGE LiberalTypeSynonyms #-}
 
 module Processing.Shader where
 
 import Graphics.Rendering.OpenGL.Raw.Core32
-import Graphics.Rendering.OpenGL.Raw.Core31.TypesInternal
+import Graphics.Rendering.OpenGL.Raw.Core31.Types
 import Control.Applicative
 import qualified Data.Text as T
 import qualified Data.Text.Encoding as TE
@@ -92,14 +94,14 @@ compileStatus shader = do
     
 infoLog :: GLuint -> IO T.Text
 infoLog shader = do
-    (GLint logsize) <- infoLogLength shader
+    logsize <- infoLogLength shader 
     log' <- allocaArray (fromIntegral logsize) 
-            (\p -> glGetShaderInfoLog shader (GLsizei logsize) nullPtr p >> peekCString (unsafeCoerce p))
+            (\p -> glGetShaderInfoLog shader logsize nullPtr p >> peekCString (unsafeCoerce p))
     pure $ T.pack log'
     
 infoLogLength :: (Integral a) => GLuint -> IO a
 infoLogLength shader = do
-    (GLint s) <- alloca (\p -> glGetShaderiv shader gl_INFO_LOG_LENGTH p >> peek p)
+    s <- alloca (\p -> glGetShaderiv shader gl_INFO_LOG_LENGTH p >> peek p) 
     pure $ (fromIntegral s)
     
 
@@ -112,7 +114,7 @@ zzEncode32 :: Int32 -> Word32
 zzEncode32 x = fromIntegral ((x `shiftL` 1) `xor` (x `shiftR` 31))
 
 glIntToEnum :: GLint -> GLenum
-glIntToEnum (GLint (CInt x)) = GLenum (CUInt (zzEncode32 x))
+glIntToEnum (CInt x) = CUInt (zzEncode32 x)
 
 -- fromGLint :: (Integral a, ) => GLint -> a
 --fromGLint (GLint x) = x
